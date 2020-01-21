@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link href="css/style.css" rel="stylesheet" type="text/css"/>
+    <link href="css/encabezado.css" rel="stylesheet" type="text/css"/>
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    
+    
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600,700" rel="stylesheet">
+         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.2.1"></script>
+        
+
+
+	<script src="js/jquery-3.2.1.js"></script>
+	<script src="js/script.js"></script>
+</head>
+<body>
+    <header>
+        <h1><img src="images/rq.png"/></h1>
+    </header>
+    
+    <div class="container">
+        <div class="row">
+            
+            <div class="category_list">
+				<a href="#" class="category_item" category="all">Todo</a>
+				<a href="#" class="category_item" category="ordenadores">Ordenadores</a>
+				<a href="#" class="category_item" category="laptops">Laptops</a>
+				<a href="#" class="category_item" category="smartphones">Smartphones</a>
+				<a href="#" class="category_item" category="monitores">Monitores</a>
+				<a href="#" class="category_item" category="audifonos">Audifonos</a>
+                              
+                                <div class="link"> 
+                <hr>
+                <a href="index.html">VER CARRITO</a><br>
+            </div>
+                                
+                            
+            
+                                
+                                
+			</div>
+            <!-- Elementos generados a partir del JSON -->
+            <main id="items" class="col-sm-8 row"></main>
+            <!-- Carrito -->
+            <aside class="col-sm-4">
+                <h2>Shopping Cart</h2>
+                <!-- Elementos del carrito -->
+                <ul id="carrito" class="list-group"></ul>
+                <hr>
+                <!-- Precio total -->
+                <p class="text-right">Total: <span id="total"></span>&dollar;</p>
+                <a href="#" id="print" onclick="javascript:printlayer('div-id.name')">Print</a>
+            </aside>
+            
+        </div>
+        
+    </div>
+     
+       
+    <script>
+        window.onload = function () {
+            // Variables
+            let baseDeDatos = [
+                {
+                    class:"list-group",
+                    id: 1,
+                    category:'list-group',
+                    nombre: 'God Of War 4',
+                  
+                    precio: 35.95,
+                    imagen: 'images/laptop_hp.jpg'
+                },
+                {
+                    class:"list-group",
+                    id: 2,
+                    category:'laptops',
+                    nombre: 'Grand Theft Auto V',
+                    precio: 28.95,
+                    imagen: 'images/laptop_toshiba.jpg'
+                },
+                {
+                    class:'product-item',
+                    id: 3,
+                    category:'smartphones',
+                    nombre: 'Pro Evolution Soccer 2020',
+                    precio: 32.95,
+                    imagen: 'images/samsung_galaxy.jpg'
+                },
+                {
+                    class:'product-item',
+                    id: 4,
+                    category:'smartphones',
+                    nombre: 'Call Of Duty: Modern Warfare',
+                    precio: 20.95,
+                    imagen: 'images/iphone.jpg'
+                },
+                {
+                    class:'product-item',
+                    id: 5,
+                    category:'ordenadores',
+                    nombre: 'Need For Speed Heat',
+                    precio: 17.95,
+                    imagen: 'images/pc_hp.jpg'
+                },
+                {
+                    class:'product-item',
+                    id: 6,
+                    category:'ordenadores',
+                    nombre: 'Mortal Kombat XI',
+                    precio: 23.95,
+                    imagen: 'images/pc_lenovo.jpg'
+                },
+                {
+                    class:'product-item',
+                    id: 7,
+                    category:'monitores',
+                    nombre: 'Jump Force',
+                    precio: 35.95,
+                    imagen: 'images/monitor_asus.jpg'
+                },
+                {
+                    class:'product-item',
+                    id: 8,
+                    category:'audifonos',
+                    nombre: 'Death Stranding',
+                    precio: 18.95,
+                    imagen: 'images/jbl.jpg'
+                },
+                
+
+            ]
+            let $items = document.querySelector('#items');
+            let carrito = [];
+            let total = 0;
+            let $carrito = document.querySelector('#carrito');
+            let $total = document.querySelector('#total');
+            // Funciones
+            function renderItems () {
+                for (let info of baseDeDatos) {
+                    // Estructura
+                    let miNodo = document.createElement('div');
+                    miNodo.classList.add('card', 'col-sm-4');
+                    // Body
+                    let miNodoCardBody = document.createElement('div');
+                    miNodoCardBody.classList.add('card-body');
+                    // Titulo
+                    let miNodoTitle = document.createElement('h5');
+                    miNodoTitle.classList.add('card-title');
+                    miNodoTitle.textContent = info['nombre'];
+                    // Imagen
+                    let miNodoImagen = document.createElement('img');
+                    miNodoImagen.classList.add('img-fluid');
+                    miNodoImagen.setAttribute('src', info['imagen']);
+                    // Precio
+                    let miNodoPrecio = document.createElement('p');
+                    miNodoPrecio.classList.add('card-text');
+                    miNodoPrecio.textContent = info['precio'] + '$';
+                    // Boton 
+                    let miNodoBoton = document.createElement('button');
+                    miNodoBoton.classList.add('btn', 'btn-primary');
+                    miNodoBoton.textContent = '+';
+                    miNodoBoton.setAttribute('marcador', info['id']);
+                    miNodoBoton.addEventListener('click', anyadirCarrito);
+                    // Insertamos
+                    miNodoCardBody.appendChild(miNodoImagen);
+                    miNodoCardBody.appendChild(miNodoTitle);
+                    miNodoCardBody.appendChild(miNodoPrecio);
+                    miNodoCardBody.appendChild(miNodoBoton);
+                    miNodo.appendChild(miNodoCardBody);
+                    $items.appendChild(miNodo);
+                }
+            }
+
+            function anyadirCarrito () {
+                // Anyadimos el Nodo a nuestro carrito
+                carrito.push(this.getAttribute('marcador'))
+                // Calculo el total
+                calcularTotal();
+                // Renderizamos el carrito 
+                renderizarCarrito();
+            }
+
+            function renderizarCarrito () {
+                // Vaciamos todo el html
+                $carrito.textContent = '';
+                // Quitamos los duplicados
+                let carritoSinDuplicados = [...new Set(carrito)];
+                // Generamos los Nodos a partir de carrito
+                carritoSinDuplicados.forEach(function (item, indice) {
+                    // Obtenemos el item que necesitamos de la variable base de datos
+                    let miItem = baseDeDatos.filter(function(itemBaseDatos) {
+                        return itemBaseDatos['id'] == item;
+                    });
+                    // Cuenta el número de veces que se repite el producto
+                    let numeroUnidadesItem = carrito.reduce(function (total, itemId) {
+                        return itemId === item ? total += 1 : total;
+                    }, 0);
+                    // Creamos el nodo del item del carrito
+                    let miNodo = document.createElement('li');
+                    miNodo.classList.add('list-group-item', 'text-right', 'mx-2');
+                    miNodo.textContent = `${numeroUnidadesItem} x ${miItem[0]['nombre']} - ${miItem[0]['precio']}$`;
+                    // Boton de borrar
+                    let miBoton = document.createElement('button');
+                    miBoton.classList.add('btn', 'btn-danger', 'mx-5');
+                    miBoton.textContent = 'X';
+                    miBoton.style.marginLeft = '1rem';
+                    miBoton.setAttribute('item', item);
+                    miBoton.addEventListener('click', borrarItemCarrito);
+                    // Mezclamos nodos
+                    miNodo.appendChild(miBoton);
+                    $carrito.appendChild(miNodo);
+                })
+            }
+
+            function borrarItemCarrito () {
+                console.log()
+                // Obtenemos el producto ID que hay en el boton pulsado
+                let id = this.getAttribute('item');
+                // Borramos todos los productos
+                carrito = carrito.filter(function (carritoId) {
+                    return carritoId !== id;
+                });
+                // volvemos a renderizar
+                renderizarCarrito();
+                // Calculamos de nuevo el precio
+                calcularTotal();
+            }
+
+            function calcularTotal () {
+                // Limpiamos precio anterior
+                total = 0;
+                // Recorremos el array del carrito
+                for (let item of carrito) {
+                    // De cada elemento obtenemos su precio
+                    let miItem = baseDeDatos.filter(function(itemBaseDatos) {
+                        return itemBaseDatos['id'] == item;
+                    });
+                    total = total + miItem[0]['precio'];
+                }
+                // Formateamos el total para que solo tenga dos decimales
+                let totalDosDecimales = total.toFixed(2);
+                // Renderizamos el precio en el HTML
+                $total.textContent = totalDosDecimales;
+            }
+            
+            function printlayer(layer){
+                var generator=window.open(",'name,");
+                var layetext= document.getElementById(layer);
+                generator.document.write(layetext.innerHTML.replace("Print Me"));
+                
+                generator.document.close();
+                generator.print();
+                generator.close();
+            }
+            // Eventos
+
+            // Inicio
+            renderItems();
+        } 
+    </script>
+    <script>
+            $('.list-group').click(function(){
+                swal({
+                    title: "desea eliminar reserva de matricula",
+                    text: "la tecnologia en tus manos ",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                })
+                        .then((willDelete) => {
+                            if (willDelete) {
+                                swal("reserva de matricula eliminada", {
+                                    icon: "success",
+                                });
+                            } else {
+                                swal(" reserva de matricula eliminada");
+                            }
+                        });
+            });</script>
+</body>
+</html>
